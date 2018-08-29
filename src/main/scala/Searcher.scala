@@ -1,24 +1,16 @@
 import java.time.LocalDate
 
-import scala.collection.immutable.ListMap
-import scala.collection.mutable.ListBuffer
-
 object Searcher {
 
-  def searchBackdatedInsertions(data: ListMap[Int, LocalDate]): List[Int] = {
-    if (data.isEmpty)
-      List.empty[Int]
-    else {
-      var ids = new ListBuffer[Int]()
-      var maxDate = data.head._2
-
-      data.foreach {
-        case (key, value) => if (value.isBefore(maxDate)) ids += key else maxDate = value
+  def searchBackdatedInsertions(data: Map[Int, LocalDate]): List[Int] = {
+    def isBackdate(id: Int, date: LocalDate) = {
+      data.filterKeys(_ < id).exists {
+        case (k: Int, v: LocalDate) => date isBefore v
       }
-
-      ids.toList
     }
 
+    data.foldLeft(List[Int]()) {
+      case (acc, (id, date)) => if (isBackdate(id, date)) id :: acc else acc
+    }
   }
-
 }
