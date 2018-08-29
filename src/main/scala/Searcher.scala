@@ -4,9 +4,7 @@ object Searcher {
 
   def searchBackdatedInsertions(data: Map[Int, LocalDate]): List[Int] = {
     def isBackdate(id: Int, date: LocalDate) = {
-      data.filterKeys(_ < id).exists {
-        case (k: Int, v: LocalDate) => date isBefore v
-      }
+      data.filterKeys(_ < id).exists(date isBefore _._2)
     }
 
     data.foldLeft(List[Int]()) {
